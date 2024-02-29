@@ -8,6 +8,7 @@ import Home from './page/HomePage/Home';
 import NotFound from './page/NotFound';
 import MapViewPage from './page/MapViewPage/MapViewPage';
 import MapAppPage from './page/MapAppPage/MapAppPage';
+import TestPage from './page/TestPage';
 
 function App() {
   const [userAuthenticated, setUserAuthenticated] = useState(false);
@@ -35,6 +36,10 @@ function App() {
           <Route
             path="/map"
             element={<MapAppPage userAuthenticated={userAuthenticated} />}
+          />
+          <Route
+          path="/testpage"
+          element={<TestPage userAuthenticated={userAuthenticated}/>}
           />
           <Route path="/*" element={<NotFound />} />
         </Routes>

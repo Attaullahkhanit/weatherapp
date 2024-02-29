@@ -7,7 +7,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {
   GoogleMap,
   LoadScript,
-  Marker,
+  MarkerF,
   DirectionsService,
   DirectionsRenderer,
 } from '@react-google-maps/api';
@@ -27,7 +27,6 @@ function MapViewPage() {
     if (!originRef.current || !destinationRef.current || originRef.current.value === '' || destinationRef.current.value === '') {
       return;
     }
-
     const directionsService = new window.google.maps.DirectionsService();
     const results = await directionsService.route({
       origin: originRef.current.value,
@@ -49,7 +48,15 @@ function MapViewPage() {
   }
 
   return (
-    <Box>
+    <Box
+    position='relative'
+    display='flex'
+    flexDirection='column'
+    alignItems='center'
+    height='100vh'
+    width='100vw'
+    >
+    <Box position='absolute' left={0} top={0} height='100%' width='100%' zIndex='2'>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <GoogleMap
           center={center}
@@ -57,11 +64,11 @@ function MapViewPage() {
           mapContainerStyle={{ width: '100%', height: '100vh' }}
           onLoad={map => setMap(map)}
         >
-          <Marker position={center} />
+          <MarkerF position={center} />
           {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
         </GoogleMap>
       </LoadScript>
-
+      </Box>
       <Box
         p={4}
         borderRadius='lg'
@@ -71,7 +78,7 @@ function MapViewPage() {
         minW='container.md'
         zIndex='1'
       >
-        <Box display='flex' justifyContent='space-between'>
+        <Box display='flex' justifyContent='space-between' alignItems='center' mb={2} zIndex='0'>
           <Autocomplete
             options={[]}
             renderInput={(params) => <Input {...params} inputRef={originRef} placeholder='Origin' />}
