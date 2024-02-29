@@ -1,0 +1,51 @@
+// src/page/MapViewPage/MapViewPage.scss
+
+.map-view-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  
+    .zip-code-column {
+      width: 100%; // Full width on mobile
+      margin-bottom: 15px;
+      box-sizing: border-box;
+  
+      @media (min-width: 600px) {
+        width: 50%; // Take 4/12 on larger screens
+      }
+      .map-view-search {
+        
+      }
+
+      .zip-code-input {
+        width: 100%;
+        margin-bottom: 15px;
+      }
+  
+      .search-button {
+        width: 100%;
+        background-color: #4caf50;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+  
+        &:hover {
+          background-color: #45a049;
+        }
+      }
+    }
+  
+    .map-view-column {
+      width: 100%; // Full width on mobile
+  
+      @media (min-width: 600px) {
+        width: 50%; // Take 8/12 on larger screens
+      }
+  
+      // Add styles for the map view area as needed
+    }
+  }
+  

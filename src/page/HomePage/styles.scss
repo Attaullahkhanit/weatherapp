@@ -1,0 +1,12 @@
+@import "/src/styles/mixins.scss";
+
+.top-nav {
+    @include flex(row, start, center, 3.125rem);
+    width: 100%;
+}
+
+.title-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}

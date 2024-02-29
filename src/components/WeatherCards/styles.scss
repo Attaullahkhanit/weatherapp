@@ -1,0 +1,50 @@
+@import "/src/styles/mixins.scss";
+
+$primary-color: #007bff;
+
+.card-container {
+  padding: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  width: 100%;
+  // styles.scss
+
+.flex-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  .icon-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+  }
+}
+
+.divider {
+  margin: 10px 0;
+}
+
+  .temperature-section {
+    @include flex(row, center, start);
+
+  }
+  .weather-icon {
+    font-size: 48px;
+    margin-right: 8px;
+  }
+
+  .section-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .icon-section {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+  }
+}
