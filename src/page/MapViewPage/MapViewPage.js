@@ -20,6 +20,7 @@ import {
   DirectionsRenderer,
   Autocomplete,
 } from "@react-google-maps/api";
+import saveZipCodeApi from "../../apis/saveZipCode/saveZipCode";
 // import SearchLocation from "../../components/SearchLocation/SearchLocation";
 
 const center = { lat: 30.3753, lng: 69.3451 };
