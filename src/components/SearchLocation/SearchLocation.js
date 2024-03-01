@@ -33,7 +33,7 @@ const SearchLocation = ({ onLocationSelect }) => {
         <div>
           <TextField
             {...getInputProps({
-              placeholder: "Location",
+              placeholder: "Location Search",
               variant: "outlined",
               margin: "normal",
               fullWidth: true,

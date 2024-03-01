@@ -16,14 +16,22 @@ import { MdDarkMode } from "react-icons/md";
 import WeatherToday from "../../components/WeatherCards/WeatherToday";
 import SearchLocation from "../../components/SearchLocation/SearchLocation";
 import { useNavigate } from "react-router-dom";
+import clearsky from '../../assets/clear sky12.jpg';
+import { showSuccessToast } from "../../utils/showToast";
 
 
-const Home = () => {
+const Home = ({ userAuthenticated, setUserAuthenticated }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [location, setLocation] = useState("");
   const [weatherData, setWeatherData] = useState(null);
 
   const navigate = useNavigate()
+
+  const handleLogout = () => {
+    setUserAuthenticated(false);
+    showSuccessToast("You Are Log Out")
+    navigate("/");
+  };
 
   const handleLocationSelect = async (selectedLocation) => {
     const { latLng } = selectedLocation;
@@ -94,6 +102,7 @@ const Home = () => {
             <SearchLocation onLocationSelect={handleLocationSelect} />
           </Box>
           <Box>
+            <Button onClick={()=> handleLogout()} variant="contained">LogOut</Button>
             <FormControlLabel
               sx={{ ml: "auto" }}
               control={
@@ -126,7 +135,7 @@ const Home = () => {
         {/* <MapViewCard/> */}
         {/* Weather Card Data */}
         <Box sx={{width: "100%", justifyItems:'end', textAlign: 'end', marginBottom: '10px' }}>
-          <Button onClick={()=> navigate("/mapview")} variant="contained">Map View</Button>
+          <Button onClick={()=> navigate("/mapview")} variant="contained" color="success">Map View</Button>
         </Box>
         <WeatherToday weatherData={weatherData} />
         {/* <Box sx={{width: "100%", justifyItems:'end', textAlign: 'end', marginBottom: '10px' }}>

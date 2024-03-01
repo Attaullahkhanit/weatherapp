@@ -11,6 +11,8 @@ import { FaDroplet } from "react-icons/fa6";
 import { FaSun } from "react-icons/fa";
 import { GiConcentricCrescents } from "react-icons/gi";
 import { Paper } from "@mui/material";
+import clearsky from "../../assets/clear sky12.jpg";
+
 import "./styles.scss";
 
 const WeatherToday = ({ weatherData }) => {
@@ -26,7 +28,7 @@ const WeatherToday = ({ weatherData }) => {
     { weatherData && (
     <Paper className="card-container">
       <Typography variant="h4" component="h1" gutterBottom>Weather Today ,{weatherData.name}, {weatherData.sys.country}</Typography>
-      <Box className="flex-box" my={2}>
+      <Box className="flex-box" my={2} style={{ backgroundImage: `url(${clearsky})`, width: '100%', height: "100px" }}>
         <Box>
         <Typography variant="h6" component="h2">
           Feels like

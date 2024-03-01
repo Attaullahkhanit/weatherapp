@@ -1,39 +1,68 @@
-import React, { useRef, useState } from 'react';
-import { Box, Button, ButtonGroup, IconButton, Input, Skeleton, Typography } from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
-import DirectionsIcon from '@mui/icons-material/Directions';
-import ClearIcon from '@mui/icons-material/Clear';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import React, { useState, useRef } from "react";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Divider,
+  IconButton,
+  Input,
+  Skeleton,
+  Typography,
+} from "@mui/material";
+// import Autocomplete from "@mui/material/Autocomplete";
+import DirectionsIcon from "@mui/icons-material/Directions";
+import ClearIcon from "@mui/icons-material/Clear";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import {
   GoogleMap,
-  LoadScript,
-  MarkerF,
-  DirectionsService,
+  useJsApiLoader,
+  Marker,
   DirectionsRenderer,
-} from '@react-google-maps/api';
+  Autocomplete,
+} from "@react-google-maps/api";
+// import SearchLocation from "../../components/SearchLocation/SearchLocation";
 
-const center = { lat: 48.8584, lng: 2.2945 };
+const center = { lat: 30.3753, lng: 69.3451 };
+
+const containerStyle = {
+  width: "100%",
+  height: "100vh",
+};
 
 function MapViewPage() {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    libraries: ["places"],
+  });
+
   const [map, setMap] = useState(null);
   const [directionsResponse, setDirectionsResponse] = useState(null);
-  const [distance, setDistance] = useState('');
-  const [duration, setDuration] = useState('');
+  const [distance, setDistance] = useState("");
+  const [duration, setDuration] = useState("");
 
-  const originRef = useRef(null);
-  const destinationRef = useRef(null);
+  /** @type React.MutableRefObject<HTMLInputElement> */
+  const originRef = useRef();
+  /** @type React.MutableRefObject<HTMLInputElement> */
+  const destiantionRef = useRef();
 
-  async function calculateRoute() {
-    if (!originRef.current || !destinationRef.current || originRef.current.value === '' || destinationRef.current.value === '') {
+  if (!isLoaded) {
+    return <Skeleton />;
+  }
+
+  async function calculateRoute({ handleLocationSelect }) {
+    if (originRef.current.value === "" || destiantionRef.current.value === "") {
       return;
     }
-    const directionsService = new window.google.maps.DirectionsService();
+    console.log("Origin:", originRef.current.value);
+    console.log("Destination:", destiantionRef.current.value);
+    // eslint-disable-next-line no-undef
+    const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
       origin: originRef.current.value,
-      destination: destinationRef.current.value,
-      travelMode: window.google.maps.TravelMode.DRIVING,
+      destination: destiantionRef.current.value,
+      // eslint-disable-next-line no-undef
+      travelMode: google.maps.TravelMode.DRIVING,
     });
-
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
@@ -41,67 +70,140 @@ function MapViewPage() {
 
   function clearRoute() {
     setDirectionsResponse(null);
-    setDistance('');
-    setDuration('');
-    if (originRef.current) originRef.current.value = '';
-    if (destinationRef.current) destinationRef.current.value = '';
+    setDistance("");
+    setDuration("");
+    originRef.current.value = "";
+    destiantionRef.current.value = "";
   }
+  // Api Calling
+  const saveZipCodeEndPoint = async () => {
+    try {
+      if (
+        originRef.current.value === "" ||
+        destiantionRef.current.value === "" ||
+        !directionsResponse
+      ) {
+        console.error("Invalid data to save.");
+        return;
+      }
+
+      const saveData = {
+        origin: originRef.current.value,
+        destination: destiantionRef.current.value,
+        distance: distance,
+        duration: duration,
+      };
+      const result = await saveZipCodeApi(saveData);
+      console.log("Save API response:", result);
+    } catch (error) {
+      console.error("Save API error:", error);
+    }
+  };
 
   return (
     <Box
-    position='relative'
-    display='flex'
-    flexDirection='column'
-    alignItems='center'
-    height='100vh'
-    width='100vw'
+      position="relative"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      height="100vh"
+      width="100vw"
     >
-    <Box position='absolute' left={0} top={0} height='100%' width='100%' zIndex='2'>
-      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+      <Box position="absolute" left={0} top={0} height="100%" width="100%">
         <GoogleMap
+          mapContainerStyle={containerStyle}
+          options={{
+            zoomControl: false,
+            streetViewControl: false,
+            mapTypeControl: false,
+            fullscreenControl: false,
+          }}
           center={center}
           zoom={15}
-          mapContainerStyle={{ width: '100%', height: '100vh' }}
-          onLoad={map => setMap(map)}
+          onLoad={(map) => setMap(map)}
         >
-          <MarkerF position={center} />
-          {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
+          <Marker position={center} />
+          {directionsResponse && (
+            <DirectionsRenderer directions={directionsResponse} />
+          )}
         </GoogleMap>
-      </LoadScript>
       </Box>
       <Box
-        p={4}
-        borderRadius='lg'
-        m={4}
-        bgColor='white'
-        shadow='base'
-        minW='container.md'
-        zIndex='1'
+        style={{
+          backgroundColor: "white",
+          borderRadius: "5px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          zIndex: "2",
+        }}
       >
-        <Box display='flex' justifyContent='space-between' alignItems='center' mb={2} zIndex='0'>
-          <Autocomplete
-            options={[]}
-            renderInput={(params) => <Input {...params} inputRef={originRef} placeholder='Origin' />}
-          />
-          <Autocomplete
-            options={[]}
-            renderInput={(params) => <Input {...params} inputRef={destinationRef} placeholder='Destination' />}
-          />
-          <ButtonGroup>
-            <Button color='primary' onClick={calculateRoute} startIcon={<DirectionsIcon />}>
-              Calculate Route
-            </Button>
-            <IconButton color='secondary' onClick={clearRoute}>
-              <ClearIcon />
-            </IconButton>
-          </ButtonGroup>
+        <Box
+          borderRadius="lg"
+          px={2}
+          mb={2}
+          bgColor="white"
+          minW="container.md"
+          zIndex="1"
+        >
+          {/* <SearchLocation onLocationSelect={handleLocationSelect} /> */}
         </Box>
-        <Box mt={4} display='flex' justifyContent='space-between'>
-          <Typography>Distance: {distance}</Typography>
-          <Typography>Duration: {duration}</Typography>
-          <IconButton color='primary' onClick={() => map?.panTo(center) && map?.setZoom(15)}>
-            <LocationOnIcon />
-          </IconButton>
+        <Divider />
+        <Box
+          p={2}
+          borderRadius="lg"
+          bgColor="white"
+          shadow="base"
+          minW="container.md"
+          zIndex="1"
+        >
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Autocomplete>
+              <Input type="text" placeholder="Origin" ref={originRef} />
+            </Autocomplete>
+            <Autocomplete>
+              <Input
+                type="text"
+                placeholder="Destination"
+                ref={destiantionRef}
+              />
+            </Autocomplete>
+            <ButtonGroup>
+              <Button color="primary" type="submit" onClick={calculateRoute}>
+                Calculate Route
+              </Button>
+              <IconButton color="secondary" onClick={clearRoute}>
+                <ClearIcon />
+              </IconButton>
+            </ButtonGroup>
+          </Box>
+
+          <Box
+            mt={4}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+            display="flex"
+            justifyContent="space-between"
+          >
+            <Typography>Distance: {distance}</Typography>
+            <Typography>Duration: {duration}</Typography>
+            <Button variant="outlined" onClick={saveZipCodeEndPoint}>
+              Save
+            </Button>
+            <IconButton
+              color="primary"
+              isRound
+              onClick={() => map?.panTo(center) && map?.setZoom(15)}
+            >
+              <LocationOnIcon />
+            </IconButton>
+          </Box>
         </Box>
       </Box>
     </Box>
