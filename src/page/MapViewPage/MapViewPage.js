@@ -36,7 +36,7 @@ function MapViewPage() {
     libraries: ["places"],
   });
 
-  const [map, setMap] = useState(null);
+  const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
@@ -49,9 +49,15 @@ function MapViewPage() {
   if (!isLoaded) {
     return <Skeleton />;
   }
+  const handleOriginInputChange = (_, value) => {
+    originRef.current.value = value;
+  };
+  const handleDestinationInputChange = (_, value) => {
+    destiantionRef.current.value = value;
+  };
 
-  async function calculateRoute({ handleLocationSelect }) {
-    if (originRef.current.value === "" || destiantionRef.current.value === "") {
+  async function calculateRoute() {
+    if (originRef.current.value === '' || destiantionRef.current.value === '') {
       return;
     }
     console.log("Origin:", originRef.current.value);
@@ -82,6 +88,8 @@ function MapViewPage() {
       if (
         originRef.current.value === "" ||
         destiantionRef.current.value === "" ||
+        distance === "" ||
+        duration === "" ||
         !directionsResponse
       ) {
         console.error("Invalid data to save.");
@@ -162,10 +170,10 @@ function MapViewPage() {
             alignItems="center"
             mb={2}
           >
-            <Autocomplete>
+            <Autocomplete onInputChange={handleOriginInputChange}>
               <Input type="text" placeholder="Origin" ref={originRef} />
             </Autocomplete>
-            <Autocomplete>
+            <Autocomplete onInputChange={handleDestinationInputChange}>
               <Input
                 type="text"
                 placeholder="Destination"

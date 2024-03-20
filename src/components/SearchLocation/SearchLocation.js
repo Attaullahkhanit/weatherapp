@@ -65,12 +65,12 @@ const SearchLocation = ({ onLocationSelect }) => {
                       ? theme.palette.mode === "dark"
                         ? "#000" // Black background for dark theme
                         : "#41b6e6" // Blue background for light theme
-                      : "#fff",
+                        : "#fff",
                     color: suggestion.active
-                      ? theme.palette.mode === "dark"
+                        ? theme.palette.mode === "dark"
                         ? "#fff" // White text for dark theme
                         : "#000" // Black text for light theme
-                      : "#000",
+                        : "#000",
                   },
                 })}
                 key={suggestion.placeId}
