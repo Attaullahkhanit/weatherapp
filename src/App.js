@@ -8,6 +8,7 @@ import Home from "./page/HomePage/Home";
 import NotFound from "./page/NotFound";
 import MapViewPage from "./page/MapViewPage/MapViewPage";
 import TestPage from "./page/TestPage";
+import GoogleMap from "./page/GoogleMap/GoogleMap";
 
 function App() {
   const [userAuthenticated, setUserAuthenticated] = useState(
@@ -48,6 +49,16 @@ function App() {
             element={
               userAuthenticated ? (
                 <MapViewPage userAuthenticated={userAuthenticated} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/googlemap"
+            element={
+              userAuthenticated ? (
+                <GoogleMap userAuthenticated={userAuthenticated} />
               ) : (
                 <Navigate to="/" replace />
               )

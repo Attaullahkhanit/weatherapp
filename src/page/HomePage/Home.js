@@ -16,7 +16,6 @@ import { MdDarkMode } from "react-icons/md";
 import WeatherToday from "../../components/WeatherCards/WeatherToday";
 import SearchLocation from "../../components/SearchLocation/SearchLocation";
 import { useNavigate } from "react-router-dom";
-import clearsky from '../../assets/clear sky12.jpg';
 import { showSuccessToast } from "../../utils/showToast";
 
 
@@ -135,7 +134,7 @@ const Home = ({ userAuthenticated, setUserAuthenticated }) => {
         {/* <MapViewCard/> */}
         {/* Weather Card Data */}
         <Box sx={{width: "100%", justifyItems:'end', textAlign: 'end', marginBottom: '10px' }}>
-          <Button onClick={()=> navigate("/mapview")} variant="contained" color="success">Map View</Button>
+          <Button onClick={()=> navigate("/googlemap")} variant="contained" color="success">Map View</Button>
         </Box>
         <WeatherToday weatherData={weatherData} />
         {/* <Box sx={{width: "100%", justifyItems:'end', textAlign: 'end', marginBottom: '10px' }}>

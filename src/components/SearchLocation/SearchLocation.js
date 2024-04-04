@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
@@ -55,8 +55,7 @@ const SearchLocation = ({ onLocationSelect }) => {
             })}
           />
           <li className="location-list">
-            {loading && <div><BiLoaderCircle/></div>}
-            
+            {loading && <div><BiLoaderCircle/></div>}            
             {suggestions.map((suggestion) => (
               <ul
                 {...getSuggestionItemProps(suggestion, {

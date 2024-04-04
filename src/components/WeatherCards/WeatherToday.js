@@ -1,8 +1,6 @@
-import React from "react";
-import { IoMdThermometer, IoMdWater, IoMdSpeedometer } from "react-icons/io";
+import React, { useEffect, useState } from "react";
 import { Container, Grid, Divider, Typography, Box } from '@mui/material';
 import { FaWind } from 'react-icons/fa';
-import { FaGripfire } from "react-icons/fa";
 import { BsThermometerSun } from "react-icons/bs";
 import { MdDewPoint } from "react-icons/md";
 import { FaCompressAlt } from "react-icons/fa";
@@ -11,13 +9,50 @@ import { FaDroplet } from "react-icons/fa6";
 import { FaSun } from "react-icons/fa";
 import { GiConcentricCrescents } from "react-icons/gi";
 import { Paper } from "@mui/material";
-import clearsky from "../../assets/clear sky12.jpg";
+import HeavyRain from "../../assets/heavy-rain1.jpg";
+import ClearSky from "../../assets/clearSky.jpg";
+import LightRain from "../../assets/lightrain.jpg";
+import ScatcherCloud from "../../assets/scaturedclo.jpg";
+import OvercastClouds from "../../assets/overcastclouds1.jpg";
+import BrokenClouds from "../../assets/brokenClouds.jpg";
+import Haze from "../../assets/haze9.jpg";
 
 import "./styles.scss";
+import { convertLength } from "@mui/material/styles/cssUtils";
 
-const WeatherToday = ({ weatherData }) => {
-  console.log(weatherData, "weather dataaa");
-  
+  const WeatherToday = ({ weatherData }) => {
+  const [bg, setBg] = useState(ClearSky);
+  const [timeOfDay, setTimeOfDay] = useState('');
+
+  useEffect(() => {
+    if (weatherData) {
+      const weatherCondition = weatherData.weather[0].main.toLowerCase();
+      if(weatherCondition === 'rain') {
+        setBg(HeavyRain);
+      } else if(weatherCondition === 'clear') {
+        setBg(ClearSky);
+      } else if(weatherCondition === 'clouds') {
+        setBg(ScatcherCloud);
+      } else if(weatherCondition === 'light rain'){
+        setBg(LightRain);
+      } else if(weatherCondition === 'overcast clouds'){
+        setBg(OvercastClouds);
+      } else if(weatherCondition === 'broken clouds'){
+        setBg(BrokenClouds);
+      } else if(weatherCondition === 'haze'){
+        setBg(Haze);
+      } else {
+        setBg(ClearSky);
+      }
+
+      const icon = weatherData?.weather[0]?.icon;
+      if (icon) {
+        const lastChar = icon.charAt(icon.length - 1);
+        setTimeOfDay(lastChar === 'd' ? 'Day' : lastChar === 'n' ? 'Night' : '');
+      }
+    }
+  }, [weatherData]);
+
   const temperatureInCelsius = weatherData ? (weatherData.main.feels_like - 273.15) : null;
   const temperatureInCelsiusMax = weatherData ? (weatherData.main.temp_max - 273.15) : null;
   const temperatureInCelsiusMin = weatherData ? (weatherData.main.temp_min - 273.15) : null;
@@ -26,14 +61,17 @@ const WeatherToday = ({ weatherData }) => {
   return (
     <>
     { weatherData && (
-    <Paper className="card-container">
+    <Paper className="card-container" >
+      <Box style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
       <Typography variant="h4" component="h1" gutterBottom>Weather Today ,{weatherData.name}, {weatherData.sys.country}</Typography>
-      <Box className="flex-box" my={2} style={{ backgroundImage: `url(${clearsky})`, width: '100%', height: "100px" }}>
+      <Typography variant="body1">{timeOfDay}</Typography>
+      </Box>
+      <Box className="flex-box" my={2} style={{ backgroundImage: `url(${bg})` }}>
         <Box>
-        <Typography variant="h6" component="h2">
+        <Typography variant="h6" component="h2" sx={{color: 'white'}}>
           Feels like
         </Typography>
-        <Typography variant="h6" component="h3" fontWeight="bolder">
+        <Typography variant="h6" component="h3" fontWeight="bolder" sx={{color: 'white'}}>
           {temperatureInCelsius !== null ? `${Math.round(temperatureInCelsius)}°C` : 'N/A'}
         </Typography>
           </Box>
@@ -43,7 +81,7 @@ const WeatherToday = ({ weatherData }) => {
                 alt="Weather Icon"
                 style={{ width: '80px', height: '80px' }}
           />
-          <Typography>
+          <Typography sx={{color: 'white'}}>
             {weatherData.weather[0].description}
           </Typography>
           </Box>
